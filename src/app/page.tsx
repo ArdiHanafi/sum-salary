@@ -38,6 +38,10 @@ const Home = () => {
         setGajiLemburPersen(38 / 100);
       }
     }
+    if (jamLembur === "") {
+      setGajiLemburPersen(0);
+      setTotalGajiLembur(0);
+    }
   }
 
   useEffect(() => {
