@@ -1,113 +1,161 @@
-import Image from "next/image";
+"use client";
+import { useEffect, useState } from "react";
 
-export default function Home() {
+const Home = () => {
+  const [golongan, setGolongan] = useState<string>("");
+  const [jamLembur, setJamLembur] = useState<string>("");
+  const [gajiPokok, setGajiPokok] = useState<number>(0);
+  const [gajiLemburPersen, setGajiLemburPersen] = useState<number>(0);
+  const [totalGajiLembur, setTotalGajiLembur] = useState<number>(0);
+  const [totalGaji, setTotalGaji] = useState<number>(0);
+
+  async function hitungGaji() {
+    const numJamLembur = Number(jamLembur);
+
+    if (golongan !== "" && jamLembur !== "") {
+      // * Cek Gaji Pokok
+      if (golongan === "A") {
+        setGajiPokok(5000000);
+      } else if (golongan === "B") {
+        setGajiPokok(6500000);
+      } else {
+        setGajiPokok(9500000);
+      }
+
+      // * Cek Presentase Gaji Lembur
+      if (numJamLembur === 1) {
+        setGajiLemburPersen(30 / 100);
+      } else if (numJamLembur === 2) {
+        setGajiLemburPersen(32 / 100);
+      }
+      if (numJamLembur === 3) {
+        setGajiLemburPersen(34 / 100);
+      }
+      if (numJamLembur === 4) {
+        setGajiLemburPersen(36 / 100);
+      }
+      if (numJamLembur >= 5) {
+        setGajiLemburPersen(38 / 100);
+      }
+    }
+  }
+
+  useEffect(() => {
+    hitungGaji();
+  }, [golongan, jamLembur]);
+
+  useEffect(() => {
+    // * Jumlah Total Gaji
+    const gajiLembur = gajiPokok * gajiLemburPersen;
+    setTotalGajiLembur(gajiLembur);
+    setTotalGaji(gajiPokok + gajiLembur);
+  }, [gajiPokok, gajiLemburPersen]);
+
+  const formatIDR = (number: number) => {
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+    }).format(number);
+  };
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:size-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <main className="flex min-h-screen flex-col items-center py-8 px-4 bg-base-300">
+      <h1 className="uppercase font-semibold text-xl mt-10 mb-6">
+        Hitung total gaji karyawan
+      </h1>
+
+      <label className="form-control w-full max-w-xs">
+        <div className="label">
+          <span className="label-text">Pilih Golongan</span>
         </div>
-      </div>
-
-      <div className="relative z-[-1] flex place-items-center before:absolute before:h-[300px] before:w-full before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 sm:before:w-[480px] sm:after:w-[240px] before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
+        <select
+          className="select select-bordered w-full max-w-xs"
+          value={golongan}
+          onChange={(e) => setGolongan(e.target.value)}
+        >
+          <option value="" disabled selected>
+            Pilih golongan
+          </option>
+          <option value="A">A</option>
+          <option value="B">B</option>
+          <option value="C">C</option>
+        </select>
+      </label>
+      <label className="form-control w-full max-w-xs mt-4">
+        <div className="label">
+          <span className="label-text">Masukkan Jam Lembur</span>
+        </div>
+        <input
+          type="text"
+          placeholder="Jam lembur"
+          className="input input-bordered w-full max-w-xs"
+          value={jamLembur}
+          onChange={(e) => {
+            const value = e.target.value;
+            // Remove any non-numeric characters
+            const numericValue = value.replace(/\D/g, "");
+            setJamLembur(numericValue);
+          }}
         />
-      </div>
+      </label>
 
-      <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
+      <label className="form-control w-full max-w-xs mt-8">
+        <p className="flex border-b mb-3 pb-2 border-base-content/50">
+          Gaji Pokok Rp <span className="ml-auto">{formatIDR(gajiPokok)}</span>
+        </p>
+        <p className="flex border-b mb-3 pb-2 border-base-content/50">
+          Gaji Lembur Rp{" "}
+          <span className="ml-auto">
+            {formatIDR(Number(totalGajiLembur.toFixed()))}
+          </span>
+        </p>
+        <p className="flex border-b mb-3 pb-2 border-base-content/50">
+          Presentase Lembur{" "}
+          <span className="ml-auto">{gajiLemburPersen * 100} %</span>
+        </p>
+        <p className="flex border-b mb-3 pb-2 border-base-content/50">
+          Total gaji adalah Rp{" "}
+          <span className="ml-auto font-bold">
+            {formatIDR(Number(totalGaji.toFixed()))}
+          </span>
+        </p>
+      </label>
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
+      <article className="prose mt-8">
+        <h1>Penjelasan:</h1>
+        <h3>Pada sebuah perusahaan dengan tiga golongan Karyawan, yaitu:</h3>
+        <ul>
+          <li>Jika Golongan A: Gaji Rp. 5.000.000</li>
+          <li>Jika Golongan B: Gaji Rp. 6.500.000</li>
+          <li>Jika Golongan C: Gaji Rp. 9.500.000</li>
+        </ul>
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-balance text-sm opacity-50">
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
+        <h3>
+          Jika karyawan tersebut lembur, maka mereka dibayar per-Jam dengan
+          ketentuan sebagai berikut:
+        </h3>
+        <ul>
+          <li>
+            Jika Karyawan lembur 1 Jam maka gaji lemburnya 30% dari Gaji Pokok
+          </li>
+          <li>
+            Jika Karyawan lembur 2 Jam maka gaji lemburnya 32% dari Gaji Pokok
+          </li>
+          <li>
+            Jika Karyawan lembur 3 Jam maka gaji lemburnya 34% dari Gaji Pokok
+          </li>
+          <li>
+            Jika Karyawan lembur 4 Jam maka gaji lemburnya 36% dari Gaji Pokok
+          </li>
+          <li>
+            {
+              "Jika Karyawan lembur >= 5 Jam maka gaji lemburnya 38% dari Gaji Pokok"
+            }
+          </li>
+        </ul>
+      </article>
     </main>
   );
-}
+};
+
+export default Home;
