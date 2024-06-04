@@ -126,18 +126,6 @@ const Home = () => {
       </label>
 
       <article className="prose mt-8">
-        <table>
-          <tbody>
-            <tr>
-              <td>Nama:</td>
-              <td>Muhamad Ardi Rahmat Hanafi</td>
-            </tr>
-            <tr>
-              <td>Prodi:</td>
-              <td>Sistem Informasi</td>
-            </tr>
-          </tbody>
-        </table>
         <h1>Penjelasan:</h1>
         <h3>Pada sebuah perusahaan dengan tiga golongan Karyawan, yaitu:</h3>
         <ul>
